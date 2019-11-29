@@ -22,7 +22,7 @@ module.exports = {
     _.extend({}, cfg, {
       delegate: 'mainDB',
       baseDir: 'model/main',
-      database: 'maindb',
+      database: 'testdb',
     }),
   ],
 };

@@ -8,13 +8,12 @@
 module.exports = () => {
   return {
     params: {
-      name: 'string',
+      username: 'string',
       password: 'string',
     },
     async controller() {
-      const { name, password } = this.state.params;
-
-      const userdata = await this.service.users.login(name, password);
+      const { username, password } = this.state.params;
+      const userdata = await this.service.user.data.login(username, password);
       this.success(userdata);
     },
   };

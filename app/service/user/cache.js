@@ -48,7 +48,7 @@ module.exports = app => {
     }
     // 添加用户信息
     async add(userid) {
-      const data = this.create(userid);
+      const data = await this.create(userid);
       const token = `${userid}#${randString()}`;
       const oldToken = await this.getToken(userid);
       if (oldToken) await this.remove(oldToken);
@@ -65,8 +65,8 @@ module.exports = app => {
       await redis.del(getKey(token));
     }
     // 创建用户信息
-    async create(userid) {
-      const user = await db.users.simpleFindOne({ userid });
+    async create(id) {
+      const user = await db.Users.simpleFindOne({ id });
       if (!user) throw new Error('无效的用户');
       return {
         userid: user.id,
