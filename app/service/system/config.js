@@ -14,6 +14,11 @@ module.exports = app => {
       }
       return configs;
     }
+    // 获取特定的配置
+    async get(name) {
+      const data = await db.SystemConfig.simpleFindOne({ name });
+      return data ? data.value : null;
+    }
     // 修改系统配置
     async setConfig(name, value) {
       await db.SystemConfig.update({ value }, { where: { name } });

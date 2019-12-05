@@ -2,6 +2,8 @@
 
 'use strict';
 
+const { env } = require('egg-sachikawa').Utils;
+
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
@@ -36,7 +38,11 @@ module.exports = appInfo => {
 
   // add your user config here
   const userConfig = {
-    // myAppName: 'egg',
+    qnap: {
+      user: env('QNAP_FILEMANAGER_USERNAME'),
+      pwd: env('QNAP_FILEMANAGER_PASSWORD'),
+      host: env('QNAP_API_URL'),
+    },
   };
 
   return {

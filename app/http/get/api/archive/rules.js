@@ -1,5 +1,5 @@
 /**
- *获取系统配置
+ *获取所有归档规则
 */
 'use strict';
 
@@ -7,8 +7,8 @@ module.exports = () => {
   return {
     userdata: { permission: 'admin' },
     async controller() {
-      const configs = this.service.system.config.listAll(true);
-      this.success(configs);
+      const rules = this.service.archive.rule.listAll();
+      this.success(rules);
     },
   };
 };

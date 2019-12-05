@@ -1,18 +1,17 @@
 /**
- *修改系统配置
+ *修改归档的扫描路径
 */
 'use strict';
 
 module.exports = () => {
   return {
     params: {
-      name: 'string',
-      value: 'object',
+      paths: 'string',
     },
     userdata: { permission: 'admin' },
     async controller() {
-      const { name, value } = this.state;
-      await this.service.system.config.set(name, JSON.stringify(value));
+      const { paths } = this.state;
+      await this.service.system.config.set('archive_path', JSON.stringify(paths));
       this.success('修改成功');
     },
   };
