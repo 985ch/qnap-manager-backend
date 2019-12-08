@@ -6,7 +6,8 @@ module.exports = app => {
   class MyService extends app.Service {
     // 列出目录下的所有文件
     async run(from, file, to) {
-      await this.service.qnap.filemanager.moveFile(file, from, to);
+      await this.service.qnap.filemanager.move(file, from, to);
+      return true;
     }
   }
   return MyService;

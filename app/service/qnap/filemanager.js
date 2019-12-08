@@ -19,17 +19,23 @@ module.exports = app => {
         user: qnapCfg.user,
         pwd: qnapCfg.pwd,
       };
-      const result = await this.ctx.curl(baseUrl + '/wfm2Login.cgi', { dataType: 'json', data });
-      if (result.status !== 1) {
-        throw new Error(`QNAP login in failed:${result.status}`);
-      }
+      let result = await this.ctx.curl(baseUrl + '/wfm2Login.cgi', { dataType: 'json', data });
+      if (result.status !== 200) throw new Error(`request QNAP failed:${result.status}`);
+      result = result.data;
+      if (result.status !== 1) throw new Error(`QNAP login in failed:${result.status}`);
       sid = result.sid;
-      await redis.setex('qnap:sid', 600, sid);
+      await redis.setex('qnap:sid', 1800, sid);
       return sid;
     }
     // 执行对应API
     async runFunc(data, retry = false) {
-      const result = await this.ctx.curl(baseUrl + '/utilRequest.cgi', { dataType: 'json', data });
+      let result = await this.ctx.curl(baseUrl + '/utilRequest.cgi', {
+        dataType: 'json',
+        data,
+        timeout: 300000,
+      });
+      if (result.status !== 200) throw new Error(`request QNAP failed:${result.status}`);
+      result = result.data;
       if (result.status) {
         if (result.status === 1) {
           return result;
@@ -44,23 +50,23 @@ module.exports = app => {
     // 执行文件管理器API
     async run(func, params) {
       const sid = await this.getSid();
-      const data = _.clone({ sid, func }, params);
+      const data = _.assign({ sid, func }, params);
       return await this.runFunc(data);
     }
     // 列出目录下所有文件的文件名
-    async listFilename(path) {
+    async listFilename(path, limit = 100, page = 0) {
       const raw = await this.run('get_list', {
         is_iso: 0, // Is a iso share. 1: yes,0: no
         list_mode: 'all', // Value is “all”
         path, // Folder path
         dir: 'ASC', // Sorting direction. ASC: Ascending , DESC: Descending
-        limit: 0, // Number of response datas
+        limit, // Number of response datas
         sort: 'filename', // Sort field (filename/filesize/filetype/mt/privilege/owner/group)
-        start: 0, // Response data start index
+        start: page * limit, // Response data start index
         hidden_file: 0, // List hidden file or not. 0:donnot list hidden files, 1:list files
       });
       const files = [];
-      const count = raw.datas.count;
+      const count = raw.datas.length;
       for (let i = 0; i < count; i++) {
         files.push(raw.datas[i].filename);
       }
@@ -70,10 +76,10 @@ module.exports = app => {
     async move(file, from, to) {
       const { status } = await this.run('move', {
         source_file: file, // Name of the copied file/folder
-        source_total: from, // Total number of copied files/folders
-        source_path: 1, // Source path of the copied file/folder
+        source_total: 1, // Total number of copied files/folders
+        source_path: from, // Source path of the copied file/folder
         dest_path: to, // Destination of the copied file/folder
-        mode: 1, // 1: skip, 0: overwrite
+        mode: 0, // 1: skip, 0: overwrite
       });
       return status;
     }

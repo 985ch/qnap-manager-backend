@@ -46,7 +46,7 @@ module.exports = app => {
     async runArchive(path) {
       // 获取指定目录的规则和文件
       const filemanager = this.service.qnap.filemanager;
-      const rules = await db.ArchiveLog.findAll({
+      const rules = await db.ArchiveRule.findAll({
         where: { path, enable: 1 },
         order: [[ 'orderID', 'ASC' ]],
         raw: true,
@@ -80,13 +80,13 @@ module.exports = app => {
     async runRule(file, { path, regular, rule, target }) {
       const checker = new RegExp(regular);
       if (!checker.test(file)) return null;
-      await this.service.archive.rules[rule].run(path, file, target);
-      return {
+      const success = await this.service.archive.rules[rule].run(path, file, target);
+      return success ? {
         file,
         source: path,
         dest: target,
         rule,
-      };
+      } : null;
     }
   }
   return MyService;
