@@ -7,7 +7,7 @@ module.exports = () => {
   return {
     userdata: { permission: 'admin' },
     async controller() {
-      const configs = this.service.system.config.listAll(true);
+      const configs = await this.service.system.config.listAll(true);
       this.success(configs);
     },
   };

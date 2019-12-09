@@ -20,7 +20,7 @@ module.exports = app => {
       return data ? data.value : null;
     }
     // 修改系统配置
-    async setConfig(name, value) {
+    async set(name, value) {
       await db.SystemConfig.update({ value }, { where: { name } });
     }
   }
