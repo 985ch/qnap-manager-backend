@@ -12,25 +12,43 @@ module.exports = app => {
         raw: true,
       };
       if (enableOnly)findJson.where = { enable: 1 };
-      return await db.ArchiveLog.findAll(findJson);
+      return await db.ArchiveRule.findAll(findJson);
     }
-    // 添加/修改规则
-    async setRule({ path, regular, rule, target, orderID }) {
-      return await db.ArchiveLog.findOrCreate({
-        where: { path, regular },
-        defaults: {
-          path,
-          regular,
-          rule,
-          target,
-          enable: 1,
-          orderID,
-        },
+    // 获取历史记录(50条)
+    async listLogs() {
+      return await db.ArchiveLog.findAll({ limit: 50, order: [[ 'id', 'DESC' ]] });
+    }
+    // 添加规则
+    async addRule({ path, regular, rule, target, orderID }) {
+      return await db.ArchiveRule.create({
+        path,
+        regular,
+        rule,
+        target,
+        enable: 1,
+        orderID,
       });
     }
-    // 禁用规则
-    async disableRule(path, regular) {
-      return await db.ArchiveLog.update({ enable: 0 }, { where: { path, regular } });
+    // 修改规则
+    async editRule({ pathBefore, regularBefore, path, regular, rule, target, orderID }) {
+      const where = {
+        path: pathBefore,
+        regular: regularBefore,
+      };
+      return await db.ArchiveRule.update({
+        path,
+        regular,
+        rule,
+        target,
+        enable: 1,
+        orderID,
+      }, {
+        where,
+      });
+    }
+    // 启用规则
+    async enableRule(path, regular, enable) {
+      return await db.ArchiveRule.update({ enable }, { where: { path, regular } });
     }
     // 对所有目录执行归档
     async runAllArchives() {

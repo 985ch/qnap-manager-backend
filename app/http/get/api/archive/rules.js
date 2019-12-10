@@ -7,7 +7,7 @@ module.exports = () => {
   return {
     userdata: { permission: 'admin' },
     async controller() {
-      const rules = this.service.archive.rule.listAll();
+      const rules = await this.service.archive.rule.listAll();
       this.success(rules);
     },
   };

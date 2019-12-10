@@ -8,14 +8,14 @@ module.exports = () => {
     params: {
       path: 'string',
       regular: 'string',
-      rule: { type: 'string', value: 'default' },
+      rule: { type: 'string', default: 'default' },
       target: 'string',
-      orderID: { type: 'integer', value: 0 },
+      orderID: { type: 'integer', enum: [ 0, 1 ] },
     },
     userdata: { permission: 'admin' },
     async controller() {
-      const params = this.state;
-      const result = this.service.archive.rule.setRule(params);
+      const { params } = this.state;
+      const result = await this.service.archive.rule.addRule(params);
       this.success(result);
     },
   };

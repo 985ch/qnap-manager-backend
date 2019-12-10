@@ -6,16 +6,18 @@
 module.exports = () => {
   return {
     params: {
+      pathBefore: 'string', // 编辑之前的路径
+      regularBefore: 'string', // 编辑之前的正则表达式
       path: 'string',
       regular: 'string',
-      rule: { type: 'string', value: 'default' },
+      rule: { type: 'string', default: 'default' },
       target: 'string',
-      orderID: { type: 'integer', value: 0 },
+      orderID: { type: 'integer', default: 0 },
     },
     userdata: { permission: 'admin' },
     async controller() {
-      const params = this.state;
-      const result = this.service.archive.rule.setRule(params);
+      const { params } = this.state;
+      const result = await this.service.archive.rule.editRule(params);
       this.success(result);
     },
   };
