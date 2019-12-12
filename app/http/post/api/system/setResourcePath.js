@@ -2,6 +2,7 @@
  *修改作品的扫描路径
 */
 'use strict';
+const _ = require('lodash');
 
 module.exports = () => {
   return {
@@ -14,7 +15,7 @@ module.exports = () => {
     userdata: { permission: 'admin' },
     async controller() {
       const { paths } = this.state.params;
-      await this.service.system.config.set('titles_path', JSON.stringify(paths));
+      await this.service.system.config.set('resource_path', JSON.stringify(_.uniq(paths)));
       this.success('修改成功');
     },
   };

@@ -53,9 +53,9 @@ module.exports = app => {
       const data = _.assign({ sid, func }, params);
       return await this.runFunc(data);
     }
-    // 列出目录下所有文件的文件名
-    async listFilename(path, limit = 100, page = 0) {
-      const raw = await this.run('get_list', {
+    // 列出目录下的所有文件
+    async listFiles(path, limit, page) {
+      return await this.run('get_list', {
         is_iso: 0, // Is a iso share. 1: yes,0: no
         list_mode: 'all', // Value is “all”
         path, // Folder path
@@ -65,6 +65,10 @@ module.exports = app => {
         start: page * limit, // Response data start index
         hidden_file: 0, // List hidden file or not. 0:donnot list hidden files, 1:list files
       });
+    }
+    // 列出目录下所有文件的文件名
+    async listFilename(path, limit = 100, page = 0) {
+      const raw = await this.listFiles(path, limit, page);
       const files = [];
       const count = raw.datas.length;
       for (let i = 0; i < count; i++) {

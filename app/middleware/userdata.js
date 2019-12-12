@@ -14,7 +14,7 @@ module.exports = options => {
     const token = ctx.get('Token');
     if (permission && !token) return ctx.fail('缺少登陆信息', errCode.INVAILD_TOKEN);
     const data = await cache.get(token);
-    if (permission && !data.userid) return ctx.fail('无效的登陆信息', errCode.INVAILD_TOKEN);
+    if (permission && data.userid === -1) return ctx.fail('无效的登陆信息', errCode.INVAILD_TOKEN);
     if (!cache.checkPermission(data, permission)) {
       return ctx.fail('没有访问权限', errCode.INVAILD_PERMISSIONS);
     }

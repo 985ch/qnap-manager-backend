@@ -6,9 +6,9 @@ module.exports = app => {
   const DataTypes = app.Sequelize;
   // -------- begin sequelize-mg replace --------
   const model = app.mainDB.define('resources', {
-    path: { type: DataTypes.STRING(300), allowNull: false, primaryKey: true }, // 路径
-    title: { type: DataTypes.INTEGER(11), allowNull: false }, // 关联作品ID
-    content: { type: DataTypes.TEXT, allowNull: false, defaultValue: '' }, // 目录内容（压缩后的base64）
+    path: { type: DataTypes.STRING(200), allowNull: false, primaryKey: true }, // 资源路径
+    folder: { type: DataTypes.STRING(100), allowNull: false, primaryKey: true }, // 目录名
+    hash: { type: DataTypes.STRING(50), allowNull: true, defaultValue: '' }, // 速查哈希值
     updatetime: { type: DataTypes.DATE, allowNull: false, defaultValue: app.mainDB.fn('current_timestamp') }, // 更新时间
   }, {
     tableName: 'resources',

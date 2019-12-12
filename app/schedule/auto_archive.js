@@ -1,6 +1,5 @@
 /**
 * 定时执行归档
-* @version 1.0.180427
 */
 'use strict';
 
@@ -17,5 +16,4 @@ module.exports = () => {
       ctx.logger.info('complete archive');
     },
   };
-}
-;
+};
