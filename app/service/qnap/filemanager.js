@@ -53,7 +53,7 @@ module.exports = app => {
       const data = _.assign({ sid, func }, params);
       return await this.runFunc(data);
     }
-    // 列出目录下的所有文件
+    // 列出目录下的文件
     async listFiles(path, limit, page) {
       return await this.run('get_list', {
         is_iso: 0, // Is a iso share. 1: yes,0: no
@@ -66,15 +66,47 @@ module.exports = app => {
         hidden_file: 0, // List hidden file or not. 0:donnot list hidden files, 1:list files
       });
     }
+    // 列出目录下的所有文件
+    async listAllFiles(path, limit = 100) {
+      let page = -1;
+      let total = 0;
+      let datas = [];
+      do {
+        page++;
+        const files = await this.listFiles(path, limit);
+        datas = datas.concat(files.datas);
+        total = files.total;
+      } while (total > page * limit + page);
+
+      return datas;
+    }
     // 列出目录下所有文件的文件名
-    async listFilename(path, limit = 100, page = 0) {
-      const raw = await this.listFiles(path, limit, page);
+    async listFilename(path) {
+      const datas = await this.listAllFiles(path);
       const files = [];
-      const count = raw.datas.length;
+      const count = datas.length;
       for (let i = 0; i < count; i++) {
-        files.push(raw.datas[i].filename);
+        files.push(datas[i].filename);
       }
       return files;
+    }
+    // 获取目录下的树形结构
+    async getTree(root) {
+      const result = {};
+      const files = await this.listAllFiles(root);
+      for (const file of files) {
+        if (file.isfolder) {
+          const children = await this.getTree(`${root}/${file.filename}`);
+          result[file.filename] = { files: children };
+        } else {
+          result[file.filename] = {
+            size: file.filesize,
+            mt: file.mt,
+          };
+        }
+      }
+
+      return result;
     }
     // 移动文件
     async move(file, from, to) {
