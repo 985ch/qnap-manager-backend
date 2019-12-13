@@ -2,6 +2,7 @@
 
 'use strict';
 
+const path = require('path');
 const { env } = require('egg-sachikawa').Utils;
 
 /**
@@ -22,6 +23,12 @@ module.exports = appInfo => {
     csrf: {
       headerName: 'x-csrf-token', // 自定义请求头
     },
+  };
+
+  // 日志设置
+  config.logger = {
+    level: 'INFO',
+    dir: path.join(appInfo.baseDir, `logs/${process.env.EGG_SERVER_ENV}`),
   };
 
   config.view = {
