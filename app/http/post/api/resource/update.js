@@ -8,8 +8,9 @@ module.exports = () => {
     params: {
       path: 'string',
     },
+    userdata: { permission: 'admin' },
     async controller() {
-      const result = await this.service.resouce.folder.checkResourcePath(this.state.params.path);
+      const result = await this.service.resource.folder.checkResourcePath(this.state.params.path);
       this.success(result);
     },
   };

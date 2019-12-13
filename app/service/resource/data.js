@@ -27,7 +27,7 @@ module.exports = app => {
     }
     // 修改资源数据
     async modifyResource(config, res, pathInfo, state) {
-      if (!pathInfo) return;
+      if (!pathInfo || res.hash === '') return;
       const cur = pathInfo[res.folder];
       if (!cur) {
         state.del++;
@@ -48,10 +48,10 @@ module.exports = app => {
     async updateResource(config, resPath, folder, hash, tree) {
       const success = await this.service.rpc.resource.updateResource(config, resPath, folder, tree);
       if (success) {
-        this.logger.info(`update resouce success [${resPath}/${folder}]`);
+        this.logger.info(`update resource success [${resPath}/${folder}]`);
         await db.Resources.upsert({ path: resPath, folder, hash });
       } else {
-        this.logger.info(`update resouce failed [${resPath}/${folder}]`);
+        this.logger.info(`update resource failed [${resPath}/${folder}]`);
       }
       return success;
     }

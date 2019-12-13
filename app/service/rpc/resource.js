@@ -6,9 +6,9 @@ module.exports = app => {
   class MyService extends app.Service {
     // 提交资源更新信息到资源管理服务器
     async updateResource({ host, key }, path, folder, tree) {
-      const info = await gzip(tree, { base64: true });
+      const info = (tree === '') ? '' : await gzip(tree, { base64: true });
       try {
-        const res = await this.curl(host + '/rpc/updateResource', {
+        const res = await app.curl(host + '/rpc/updateResource', {
           method: 'POST',
           dataType: 'json',
           contentType: 'json',
