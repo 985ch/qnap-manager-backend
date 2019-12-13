@@ -17,6 +17,13 @@ module.exports = appInfo => {
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1574410684769_6729';
 
+  // 加密设置
+  config.security = {
+    csrf: {
+      headerName: 'x-csrf-token', // 自定义请求头
+    },
+  };
+
   config.view = {
     defaultViewEngine: 'ejs',
     mapping: {
