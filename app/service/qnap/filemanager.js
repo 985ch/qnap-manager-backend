@@ -73,7 +73,7 @@ module.exports = app => {
       let datas = [];
       do {
         page++;
-        const files = await this.listFiles(path, limit);
+        const files = await this.listFiles(path, limit, page);
         datas = datas.concat(files.datas);
         total = files.total;
       } while (total > page * limit + limit);
